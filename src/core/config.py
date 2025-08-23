@@ -1,4 +1,5 @@
 from dataclasses import dataclass, asdict
+from datetime import datetime
 
 
 @dataclass
@@ -26,6 +27,9 @@ class GPT2Config:
     num_sequences_per_batch_per_device: int = 16
     num_sequences_per_batch: int = num_devices * num_sequences_per_batch_per_device
 
+    num_train_samples: int = 2**21
+    num_val_samples: int = num_train_samples // 100
+
     # Weight initialization
     initialized_std_range: float = 0.02
 
@@ -46,7 +50,9 @@ class GPT2Config:
     wandb_entity: str = "the-ganesh-ravichandran-none"
     wandb_project: str = "gpt2-jax"
 
-    saved_model_name: str = "gpt2-multi.eqx"
+    saved_model_name: str = (
+        f"gpt2-multi-{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}.eqx"
+    )
 
     def to_dict(self) -> dict:
         """Convert config to dictionary."""

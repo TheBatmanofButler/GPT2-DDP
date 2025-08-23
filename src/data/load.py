@@ -9,29 +9,17 @@ from pantheon.gpt2_jax.core.config import GPT2Config
 
 
 def build_dataloaders(config: GPT2Config):
-    # Load training and validation data.
-
-    dataset_path = os.path.join(os.getcwd(), "dataset")
-
-    # if not os.path.exists(dataset_path):
     dataset_dict = datasets.load_dataset(
-        dataset_path,
+        os.path.join(os.getcwd(), "dataset"),
         config.dataset_name,
-        # cache_dir=dataset_path,
     )
-    # else:
-    # dataset_dict = datasets.load_from_disk(
-    #     "/home/ganesh/code/pantheon/src/pantheon/gpt2_jax/dataset/roneneldan___tiny_stories"
-    # )
 
     train_dataset = dataset_dict[datasets.Split.TRAIN]
     val_dataset = dataset_dict[datasets.Split.VALIDATION]
 
-    NUM_TRAIN_SAMPLES = 2**21
-    NUM_VAL_SAMPLES = NUM_TRAIN_SAMPLES // 100
-    if NUM_VAL_SAMPLES > len(val_dataset):
+    if config.num_val_samples > len(val_dataset):
         raise ValueError(
-            f"Number of validation samples ({NUM_VAL_SAMPLES}) is greater than the number of samples in the dataset ({len(val_dataset)})"
+            f"Number of validation samples ({config.num_val_samples}) is greater than the number of samples in the dataset ({len(val_dataset)})"
         )
 
     #  Each sample will be padded or truncated to the size of the context window.
@@ -48,7 +36,7 @@ def build_dataloaders(config: GPT2Config):
     if not os.path.exists(train_dataset_path):
         # Tokenize datasets.
         train_dataset = (
-            train_dataset.select(range(NUM_TRAIN_SAMPLES))
+            train_dataset.select(range(config.num_train_samples))
             .filter(lambda x: len(x["text"]) > 2)
             .map(
                 tokenize,
