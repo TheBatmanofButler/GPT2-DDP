@@ -1,5 +1,5 @@
 [project]
-name = "gpt2-ddp"
+name = "gpt2ddp"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"

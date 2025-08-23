@@ -4,23 +4,18 @@ import datasets
 import torch
 import os
 
-import pantheon.gpt2_jax.data.tokenizer as tokenizer
-from pantheon.gpt2_jax.core.config import GPT2Config
+import gpt2ddp.data.tokenizer as tokenizer
+from gpt2ddp.core.config import GPT2Config
 
 
 def build_dataloaders(config: GPT2Config):
     dataset_dict = datasets.load_dataset(
-        os.path.join(os.getcwd(), "dataset"),
+        config.dataset_path,
         config.dataset_name,
     )
 
     train_dataset = dataset_dict[datasets.Split.TRAIN]
     val_dataset = dataset_dict[datasets.Split.VALIDATION]
-
-    if config.num_val_samples > len(val_dataset):
-        raise ValueError(
-            f"Number of validation samples ({config.num_val_samples}) is greater than the number of samples in the dataset ({len(val_dataset)})"
-        )
 
     #  Each sample will be padded or truncated to the size of the context window.
     def tokenize(sample: str):

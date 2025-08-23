@@ -3,10 +3,10 @@ import jax.numpy as jnp
 import optax
 import wandb
 
-import pantheon.gpt2_jax.core.model as model_lib
-import pantheon.gpt2_jax.core.config as config
-import pantheon.gpt2_jax.data.load as load
-import pantheon.gpt2_jax.data.save as save
+import gpt2ddp.core.model as model_lib
+import gpt2ddp.core.config as config
+import gpt2ddp.data.load as load
+import gpt2ddp.data.save as save
 
 key = jax.random.PRNGKey(1)
 key, model_key = jax.random.split(key)

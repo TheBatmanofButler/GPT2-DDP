@@ -2,10 +2,10 @@ import argparse
 import jax
 import jax.numpy as jnp
 
-import pantheon.gpt2_jax.data.load as load
-import pantheon.gpt2_jax.core_eqx.model as model_lib
-import pantheon.gpt2_jax.core_eqx.config as config
-import pantheon.gpt2_jax.data.tokenizer as tokenizer
+import gpt2ddp.data.load as load
+import gpt2ddp.core_eqx.model as model_lib
+import gpt2ddp.core_eqx.config as config
+import gpt2ddp.data.tokenizer as tokenizer
 
 
 key = jax.random.PRNGKey(1)

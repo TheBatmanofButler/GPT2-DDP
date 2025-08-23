@@ -1,5 +1,5 @@
 import transformers
-import pantheon.gpt2_jax.core.config as config
+import gpt2ddp.core.config as config
 
 
 class Tokenizer:

@@ -1,8 +1,8 @@
 import jax
 
-import pantheon.gpt2_jax.core.config as config
-import pantheon.gpt2_jax.core.embed as embed_lib
-import pantheon.gpt2_jax.core.block as block_lib
+import gpt2ddp.core.config as config
+import gpt2ddp.core.embed as embed_lib
+import gpt2ddp.core.block as block_lib
 
 
 def init(key):

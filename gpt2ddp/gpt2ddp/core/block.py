@@ -1,8 +1,8 @@
 import jax
 
-import pantheon.gpt2_jax.core.attention as attention_lib
-import pantheon.gpt2_jax.core.mlp as mlp_lib
-import pantheon.gpt2_jax.core.layer_norm as layer_norm_lib
+import gpt2ddp.core.attention as attention_lib
+import gpt2ddp.core.mlp as mlp_lib
+import gpt2ddp.core.layer_norm as layer_norm_lib
 
 
 def init(key, d_embedding, d_mlp):

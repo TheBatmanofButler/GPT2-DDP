@@ -601,7 +601,7 @@ wheels = [
 ]
 
 [[package]]
-name = "gpt2-ddp"
+name = "gpt2ddp"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

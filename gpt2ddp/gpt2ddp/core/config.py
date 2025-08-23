@@ -27,8 +27,7 @@ class GPT2Config:
     num_sequences_per_batch_per_device: int = 16
     num_sequences_per_batch: int = num_devices * num_sequences_per_batch_per_device
 
-    num_train_samples: int = 2**21
-    num_val_samples: int = num_train_samples // 100
+    num_train_samples: int = 2119489
 
     # Weight initialization
     initialized_std_range: float = 0.02
