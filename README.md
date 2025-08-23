@@ -1,1 +1,1 @@
-# gpt2-ddp
+# GPT2-DDP
