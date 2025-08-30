@@ -4,6 +4,7 @@ This is a JAX implementation of GPT-2 with data parallelism (similar to PyTorch'
 
 To run the training script:
 ```
+cd GPT2-DDP/gpt2ddp/gpt2ddp
 uv run scripts/train.py
 ```
 
