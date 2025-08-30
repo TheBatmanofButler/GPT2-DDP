@@ -116,6 +116,10 @@ for batch_idx, batch in enumerate(train_dataloader):
     params, optimizer_state, loss = update_step(params, optimizer_state, batch)
 
     print(f"Batch {step}: Loss = {loss:.4f}")
+    wandb.log(
+        data={"train_loss": loss},
+        step=step,
+    )
 
     if step % 100 == 0:
         test_batch = next(iter(test_dataloader))

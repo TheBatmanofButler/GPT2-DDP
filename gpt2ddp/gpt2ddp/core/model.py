@@ -1,4 +1,5 @@
 import jax
+import jax.numpy as jnp
 
 import gpt2ddp.core.config as config
 import gpt2ddp.core.embed as embed_lib
@@ -42,7 +43,9 @@ def forward(params, sample):
 
     x = jax.vmap(embed_lib.embed_forward, in_axes=(None, 0))(
         params["embed"], x
-    ) + jax.vmap(embed_lib.pos_embed_forward, in_axes=(None, 0))(params["pos_embed"], x)
+    ) + jax.vmap(embed_lib.pos_embed_forward, in_axes=(None, 0))(
+        params["pos_embed"], jnp.arange(len(x))
+    )
 
     for block in params["blocks"]:
         x = block_lib.forward(

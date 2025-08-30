@@ -14,8 +14,8 @@ def embed_init(key, d_vocab, d_embedding, initialized_std_range):
     )
 
 
-def embed_forward(params, x):
-    return params[x]
+def embed_forward(params, token):
+    return params[token]
 
 
 def pos_embed_init(context_window, d_embedding):
@@ -30,10 +30,8 @@ def pos_embed_init(context_window, d_embedding):
     )
 
 
-def pos_embed_forward(params, x):
-    positions = jnp.arange(len(x))
-
-    return params[positions]
+def pos_embed_forward(params, position):
+    return params[position]
 
 
 def unembed_init(key, d_vocab, d_embedding, initialized_std_range):
