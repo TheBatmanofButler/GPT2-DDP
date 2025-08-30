@@ -1,3 +1,8 @@
+import os
+
+os.environ["XLA_PYTHON_CLIENT_PREALLOCATE"] = "false"
+os.environ["XLA_PYTHON_CLIENT_ALLOCATOR"] = "platform"
+
 import jax
 import jax.numpy as jnp
 import optax
@@ -22,10 +27,10 @@ optimizer_state = optimizer.init(params)
 
 mesh = jax.make_mesh(
     (config.gpt2_config.num_devices,),
-    axis_names=("batch",),
+    axis_names=("device",),
 )
 
-batch_sharding = jax.NamedSharding(mesh, jax.sharding.PartitionSpec("batch"))
+device_sharding = jax.NamedSharding(mesh, jax.sharding.PartitionSpec("device"))
 replicated_sharding = jax.NamedSharding(mesh, jax.sharding.PartitionSpec())
 
 params = jax.device_put(params, replicated_sharding)
@@ -62,8 +67,8 @@ def param_loss_fn(params, batch):
 def compute_loss_and_grads(params, batch):
     loss, grads = jax.value_and_grad(param_loss_fn)(params, batch)
 
-    loss = jax.lax.pmean(loss, axis_name="batch")
-    grads = jax.lax.pmean(grads, axis_name="batch")
+    loss = jax.lax.pmean(loss, axis_name="device")
+    grads = jax.lax.pmean(grads, axis_name="device")
 
     return loss, grads
 
@@ -73,7 +78,7 @@ def update_step(params, optimizer_state, batch):
     loss, grads = jax.shard_map(
         compute_loss_and_grads,
         mesh=mesh,
-        in_specs=(replicated_sharding.spec, batch_sharding.spec),
+        in_specs=(replicated_sharding.spec, device_sharding.spec),
         out_specs=(replicated_sharding.spec, replicated_sharding.spec),
     )(params, batch)
 
@@ -104,29 +109,25 @@ def evaluate(params, sample):
 
 
 for batch_idx, batch in enumerate(train_dataloader):
-    batch = jax.device_put(batch, batch_sharding)
+    batch = jax.device_put(batch, device_sharding)
 
     step = batch_idx + 1
 
     params, optimizer_state, loss = update_step(params, optimizer_state, batch)
 
     print(f"Batch {step}: Loss = {loss:.4f}")
-    wandb.log(
-        data={"train_loss": loss},
-        step=step,
-    )
 
     if step % 100 == 0:
         test_batch = next(iter(test_dataloader))
-        test_batch = jax.device_put(test_batch, batch_sharding)
+        test_batch = jax.device_put(test_batch, device_sharding)
 
         eval_fn = jax.shard_map(
             lambda params, batch: jax.vmap(lambda sample: evaluate(params, sample))(
                 batch
             ),
             mesh=mesh,
-            in_specs=(replicated_sharding.spec, batch_sharding.spec),
-            out_specs=batch_sharding.spec,
+            in_specs=(replicated_sharding.spec, device_sharding.spec),
+            out_specs=device_sharding.spec,
         )
 
         batch_accuracies = eval_fn(params, test_batch)
