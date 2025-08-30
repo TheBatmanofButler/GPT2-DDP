@@ -1,6 +1,6 @@
 # GPT2-DDP
 
-This is a JAX implementation of GPT-2 with data parallelism (similar to PyTorch's Distributed Data Parallel). See my [blog post](https://thebatmanofbutler.substack.com/) for more details.
+This is a JAX implementation of GPT-2 with data parallelism (similar to PyTorch's Distributed Data Parallel). See my [blog post](https://thebatmanofbutler.substack.com/) for more details on how data parallelism works.
 
 To run the training script:
 ```
